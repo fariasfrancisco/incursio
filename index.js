@@ -60,9 +60,7 @@ function inRange(value, min, max) {
 }
 
 function getLocationPiece(location) {
-  for (const piece of pieces) {
-    if (piece.location === location) return piece;
-  }
+  return pieces.find(piece => piece.location === location);
 }
 
 function populatePlayerPieces() {
@@ -147,8 +145,8 @@ function getClickedLocation(e) {
 function calculateMoveOptions(cell, direction) {
   options = [];
 
-  let piece,
-    location;
+  let piece;
+  let location;
 
   if (cells[cell.i + direction] != null) {
     if (!(cell.i + direction === 4 && cell.j + 1 === 2) && cells[cell.i + direction][cell.j + 1] != null) {
@@ -170,7 +168,6 @@ function calculateMoveOptions(cell, direction) {
       if (piece != null && cells[cell.i + 2 * direction][cell.j - 2] != null) {
         location = cells[cell.i + 2 * direction][cell.j - 2];
         piece = getLocationPiece(cells[cell.i + 2 * direction][cell.j - 2]);
-
       }
 
       if (piece == null || piece.location !== location) options.push(new Option(location, piece));
@@ -235,6 +232,32 @@ function handleEndOfTurn() {
   jumped = false;
 }
 
+function handlePieceMovement(cell, option) {
+  selectedPiece.location = cell;
+
+  if (option.piece != null && option.piece.player !== turn) {
+    selectedPiece.status--;
+    option.piece.status = -1;
+  }
+
+  if (option.piece == null || !canJump(selectedPiece)) {
+    handleEndOfTurn();
+  } else {
+    jumped = true;
+    clickablePieces = [selectedPiece];
+    forcedPieces = [selectedPiece];
+  }
+}
+
+function handlePiecePicking(cell) {
+  selectedPiece = getLocationPiece(cell);
+
+  if (selectedPiece != null) {
+    if (clickablePieces.includes(selectedPiece)) calculateMoveOptions(cell, selectedPiece.player);
+    else selectedPiece = undefined;
+  }
+}
+
 function handleClick(e) {
   const cell = getClickedLocation(e);
 
@@ -242,31 +265,13 @@ function handleClick(e) {
     const option = options.find(option => option.cell === cell);
 
     if (option !== undefined) {
-      selectedPiece.location = cell;
-
-      if (option.piece != null && option.piece.player !== turn) {
-        selectedPiece.status--;
-        option.piece.status = -1;
-      }
-
-      if (option.piece == null || !canJump(selectedPiece)) {
-        handleEndOfTurn();
-      } else {
-        jumped = true;
-        clickablePieces = [selectedPiece];
-        forcedPieces = [selectedPiece];
-      }
+      handlePieceMovement(cell, option);
     } else {
       selectedPiece = undefined;
       options = [];
     }
   } else {
-    selectedPiece = getLocationPiece(cell);
-
-    if (selectedPiece != null) {
-      if (clickablePieces.includes(selectedPiece)) calculateMoveOptions(cell, selectedPiece.player);
-      else selectedPiece = undefined;
-    }
+    handlePiecePicking(cell);
   }
 
   drawHighlights();
