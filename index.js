@@ -162,7 +162,12 @@ function calculateMoveOptions (cell, direction) {
   function checkAvailability (x, y, location) {
     const piece = getLocationPiece(location)
 
-    if (piece != null && x < 9 && x > -1 && y < 5 && y > -1 && cells[x][y] != null) location = cells[x][y]
+    if (piece != null && x < 9 && x > -1 && cells[x][y] != null) {
+      location = cells[x][y]
+
+      if (getLocationPiece(location) != null) return
+    }
+
     if (piece == null || piece.location !== location) options.push(new Option(location, piece))
   }
 
