@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+	<meta charset="UTF-8">
+	<title>Title</title>
 </head>
 <body>
 <canvas id="board-layer" width="800" height="600" style="z-index: 1; position:absolute; left:0; top:0;"></canvas>
 <canvas id="highlight-layer" width="800" height="600" style="z-index: 2; position:absolute; left:0; top:0;"></canvas>
 <canvas id="pieces-layer" width="800" height="600" style="z-index: 3; position:absolute; left:0; top:0;"></canvas>
+
+<div style="position:absolute; left:40em; top:0; background-color: #b8b8b8; padding-left: 0.5em; padding-right: 0.5em;">
+    <h3 id="turn" style="font-family: Ubuntu,sans-serif"></h3>
+</div>
+
+<div style="position:absolute; left:40em; top:5em; background-color: #b8b8b8; padding-left: 0.5em; padding-right: 0.75em;">
+	<h3 style="font-family: Ubuntu,sans-serif">P1 Pieces:</h3>
+	<pre id="p1pieces"></pre>
+</div>
+
+<div style="position:absolute; left:58em; top:5em; background-color: #b8b8b8; padding-left: 0.5em; padding-right: 0.75em;">
+	<h3 style="font-family: Ubuntu,sans-serif">P2 Pieces:</h3>
+	<pre id="p2pieces"></pre>
+</div>
 </body>
 <script type="text/javascript" src="index.js"></script>
 </html>
