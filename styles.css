@@ -1,0 +1,66 @@
+.canvas-layers {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#board-layer {
+  z-index: 1;
+}
+
+#highlight-layer {
+  z-index: 2;
+}
+
+#pieces-layer {
+  z-index: 3;
+}
+
+.turn {
+  position: absolute;
+  left: 40em;
+  top: 0;
+  background-color: #b8b8b8;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.pieces {
+  position: absolute;
+  top: 5em;
+  background-color: #b8b8b8;
+  padding-left: 0.5em;
+  padding-right: 0.75em;
+}
+
+.p1 {
+  left: 40em;
+}
+
+.p2 {
+  left: 58em;
+}
+
+.reset {
+  position: absolute;
+  left: 50em;
+  top: 0;
+}
+
+.reset-button {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.points {
+  position: absolute;
+  left: 50em;
+  top: 0;
+  background-color: #b8b8b8;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+h3 {
+  font-family: Ubuntu, sans-serif
+}

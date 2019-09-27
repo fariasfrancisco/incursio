@@ -3,29 +3,35 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Title</title>
+	<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<canvas id="board-layer" width="800" height="600" style="z-index: 1; position:absolute; left:0; top:0;"></canvas>
-<canvas id="highlight-layer" width="800" height="600" style="z-index: 2; position:absolute; left:0; top:0;"></canvas>
-<canvas id="pieces-layer" width="800" height="600" style="z-index: 3; position:absolute; left:0; top:0;"></canvas>
+<canvas id="board-layer" width="800" height="600" class="canvas-layers"></canvas>
+<canvas id="highlight-layer" width="800" height="600" class="canvas-layers"></canvas>
+<canvas id="pieces-layer" width="800" height="600" class="canvas-layers"></canvas>
 
-<div style="position:absolute; left:40em; top:0; background-color: #b8b8b8; padding-left: 0.5em; padding-right: 0.5em;">
-    <h3 id="turn" style="font-family: Ubuntu,sans-serif"></h3>
+<div class="turn">
+	<h3 id="turn"></h3>
 </div>
 
-<div style="position:absolute; left:50em; top:0; background-color: #b8b8b8; padding-left: 0.5em; padding-right: 0.5em;">
-    <h3 id="points" style="font-family: Ubuntu,sans-serif"></h3>
+<div class="points">
+	<h3 id="points"></h3>
 </div>
 
-<div style="position:absolute; left:40em; top:5em; background-color: #b8b8b8; padding-left: 0.5em; padding-right: 0.75em;">
-	<h3 style="font-family: Ubuntu,sans-serif">P1 Pieces:</h3>
+<div class="reset">
+	<button id="reset" onclick="setupGame()" class="reset-button">RESET</button>
+</div>
+
+<div class="pieces p1">
+	<h3>P1 Pieces:</h3>
 	<pre id="p1pieces"></pre>
 </div>
 
-<div style="position:absolute; left:58em; top:5em; background-color: #b8b8b8; padding-left: 0.5em; padding-right: 0.75em;">
-	<h3 style="font-family: Ubuntu,sans-serif">P2 Pieces:</h3>
+<div class="pieces p2">
+	<h3>P2 Pieces:</h3>
 	<pre id="p2pieces"></pre>
 </div>
 </body>
+
 <script type="text/javascript" src="index.js"></script>
 </html>

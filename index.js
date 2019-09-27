@@ -1,5 +1,13 @@
 'use strict'
 
+/**
+ * TODO
+ *
+ * Reset
+ * C to C jumping
+ * Fwd A/B to Bk A/B jumping
+ */
+
 class Option {
   constructor (cell, piece) {
     this.cell = cell
@@ -15,6 +23,10 @@ class Player {
   }
 
   reset () {
+    for (let i = 0; i < 5; i++) {
+      delete this.pieces[i];
+    }
+
     this.pieces = []
     this.points = 0
   }
@@ -53,7 +65,7 @@ const p2PiecesPre = document.getElementById('p2pieces')
 const turnText = document.getElementById('turn')
 const pointsText = document.getElementById('points')
 let selectedPiece
-let turn = 1
+let turn
 let clickablePieces = []
 let forcedPieces = []
 let options = []
@@ -337,16 +349,18 @@ function handleClick (e) {
   p2PiecesPre.innerText = JSON.stringify(prettyPrintPieces(p2.pieces), undefined, 2)
 }
 
-window.addEventListener('load', () => {
+function setupGame () {
+  [p1, p2].forEach(player => player.reset())
   drawBoard()
   populatePlayerPieces()
   drawPieces()
   printTurn()
+  clickablePieces.push(...p1.pieces)
 
+  turn = 1
   p1PiecesPre.innerText = JSON.stringify(prettyPrintPieces(p1.pieces), undefined, 2)
   p2PiecesPre.innerText = JSON.stringify(prettyPrintPieces(p2.pieces), undefined, 2)
+}
 
-  clickablePieces.push(...p1.pieces)
-})
-
+window.addEventListener('load', setupGame)
 piecesLayer.addEventListener('click', handleClick)
