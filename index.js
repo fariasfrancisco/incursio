@@ -8,9 +8,15 @@ class Option {
 }
 
 class Player {
-  constructor (turn, pieces) {
+  constructor (turn, pieces, points) {
     this.turn = turn
     this.pieces = pieces
+    this.points = points
+  }
+
+  reset () {
+    this.pieces = []
+    this.points = 0
   }
 }
 
@@ -40,11 +46,12 @@ const piecesContext = piecesLayer.getContext('2d')
 const cells = []
 const CELL_SIZE = Math.min(boardLayer.width / 5, boardLayer.height / 9)
 const pieces = []
-const p1 = new Player(1, [])
-const p2 = new Player(-1, [])
+const p1 = new Player(1, [], 0)
+const p2 = new Player(-1, [], 0)
 const p1PiecesPre = document.getElementById('p1pieces')
 const p2PiecesPre = document.getElementById('p2pieces')
 const turnText = document.getElementById('turn')
+const pointsText = document.getElementById('points')
 let selectedPiece
 let turn = 1
 let clickablePieces = []
@@ -62,6 +69,10 @@ function prettyPrintPieces (pieces) {
 
 function printTurn () {
   turnText.innerText = `Player ${turn > 0 ? 1 : 2}'s Turn`
+}
+
+function printPoints () {
+  pointsText.innerText = `Player 1: ${p1.points} | Player 2: ${p2.points}`
 }
 
 function getPieceColor (piece) {
@@ -121,9 +132,9 @@ function drawBoard () {
   boardContext.strokeText('A', cells[6][4].x + xOffset, cells[6][4].y + yOffset)
   boardContext.strokeText('B', cells[2][4].x + xOffset, cells[2][4].y + yOffset)
   boardContext.strokeText('B', cells[6][0].x + xOffset, cells[6][0].y + yOffset)
-  boardContext.strokeText('C', cells[4][0].x + xOffset, cells[4][0].y + yOffset)
-  boardContext.strokeText('C', cells[4][4].x + xOffset, cells[4][4].y + yOffset)
-  boardContext.strokeText('X', cells[4][2].x + xOffset, cells[4][2].y + yOffset)
+  boardContext.strokeText('Γ', cells[4][0].x + xOffset, cells[4][0].y + yOffset)
+  boardContext.strokeText('Γ', cells[4][4].x + xOffset, cells[4][4].y + yOffset)
+  boardContext.strokeText('Ω', cells[4][2].x + xOffset, cells[4][2].y + yOffset)
 }
 
 function drawHighlights () {
@@ -162,12 +173,15 @@ function calculateMoveOptions (cell, direction) {
   function checkAvailability (x, y, location) {
     const piece = getLocationPiece(location)
 
-    if (piece != null && x < 9 && x > -1 && cells[x][y] != null) {
-      location = cells[x][y]
+    if (piece != null && x < 9 && x > -1) {
+      if ([2, 4, 6].includes(location.i) && [0, 4].includes(location.j) && (y > 4 || y < 0)) {
+        x = location.i < 4 ? 6 : location.i > 4 ? 2 : 4
+        y = Math.abs(location.j - 4)
+      }
 
+      if (cells[x][y] != null) location = cells[x][y]
       if (getLocationPiece(location) != null) return
     }
-
     if (piece == null || piece.location !== location) options.push(new Option(location, piece))
   }
 
@@ -179,7 +193,7 @@ function calculateMoveOptions (cell, direction) {
     if (!(cell.i + direction === 4 && cell.j + 1 === 2) && cells[cell.i + direction][cell.j + 1] != null) {
       const location = cells[cell.i + direction][cell.j + 1]
       const x = cell.i + 2 * direction
-      const y = Math.abs(cell.j + 2)
+      const y = cell.j + 2
 
       checkAvailability(x, y, location)
     }
@@ -188,7 +202,7 @@ function calculateMoveOptions (cell, direction) {
     if (!(cell.i + direction === 4 && cell.j - 1 === 2) && cells[cell.i + direction][cell.j - 1] != null) {
       const location = cells[cell.i + direction][cell.j - 1]
       const x = cell.i + 2 * direction
-      const y = Math.abs(cell.j - 2)
+      const y = cell.j - 2
 
       checkAvailability(x, y, location)
     }
@@ -240,8 +254,8 @@ function handleEndOfTurn () {
   }
 
   if (clickablePieces.length < 1) {
-    console.log('END GAME REACHED!')
-    // TODO TRIGGER END GAME
+    countPoints()
+    printPoints()
   }
 
   options = []
@@ -254,9 +268,15 @@ function handlePieceMovement (cell, option) {
 
   if (option.piece != null) {
     if (option.piece.player !== turn) {
-      selectedPiece.status--
       option.piece.status = -1
       option.piece.location = null
+      selectedPiece.status--
+
+      if (selectedPiece.status < 0) {
+        selectedPiece.location = null
+
+        return handleEndOfTurn()
+      }
     }
 
     calculateMoveOptions(selectedPiece.location, selectedPiece.player)
@@ -280,6 +300,18 @@ function handlePiecePicking (cell) {
     if (clickablePieces.includes(selectedPiece)) calculateMoveOptions(cell, selectedPiece.player)
     else selectedPiece = undefined
   }
+}
+
+function countPoints () {
+  if (p1.pieces.every(piece => piece.status === 0)) p2.points += 5
+  if (p2.pieces.every(piece => piece.status === 0)) p1.points += 5;
+
+  [p1, p2].forEach(player => {
+    player.pieces.forEach(piece => {
+      if (piece.status) return
+      if (piece.location.i === 7) player.points++
+    })
+  })
 }
 
 function handleClick (e) {
